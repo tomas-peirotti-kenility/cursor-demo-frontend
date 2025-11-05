@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Expense Tracker - Categories</title>
+<link href="https://fonts.googleapis.com" rel="preconnect"/>
+<link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect"/>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<style type="text/tailwindcss">
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#13ecec",
+              "background-light": "#f6f8f8",
+              "background-dark": "#102222",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark">
+<div class="relative flex min-h-screen w-full">
+<!-- SideNavBar -->
+<aside class="flex-shrink-0 w-64 bg-[#111818] flex flex-col">
+<div class="flex flex-col h-full p-4">
+<div class="flex items-center gap-3 p-2 mb-6">
+<span class="material-symbols-outlined text-primary text-3xl">account_balance_wallet</span>
+<h1 class="text-white text-xl font-bold">FinTrack</h1>
+</div>
+<div class="flex flex-col gap-4 flex-grow">
+<div class="flex flex-col gap-2">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-white/70 hover:bg-[#283939] hover:text-white transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<p class="text-sm font-medium leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-white/70 hover:bg-[#283939] hover:text-white transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">receipt_long</span>
+<p class="text-sm font-medium leading-normal">Transactions</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-[#283939] text-white transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">folder</span>
+<p class="text-sm font-medium leading-normal">Categories</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-white/70 hover:bg-[#283939] hover:text-white transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">bar_chart</span>
+<p class="text-sm font-medium leading-normal">Reports</p>
+</a>
+</div>
+</div>
+<div class="flex flex-col gap-1">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-white/70 hover:bg-[#283939] hover:text-white transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-sm font-medium leading-normal">Settings</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-white/70 hover:bg-[#283939] hover:text-white transition-colors duration-200" href="#">
+<span class="material-symbols-outlined">logout</span>
+<p class="text-sm font-medium leading-normal">Log out</p>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 p-8 overflow-y-auto">
+<div class="max-w-7xl mx-auto">
+<!-- PageHeading -->
+<div class="flex flex-wrap justify-between items-center gap-4 mb-8">
+<div class="flex flex-col gap-2">
+<p class="text-gray-900 dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">Manage Categories</p>
+<p class="text-gray-500 dark:text-[#9db9b9] text-base font-normal leading-normal">View, create, and edit your expense categories.</p>
+</div>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-12 px-6 bg-primary text-black text-sm font-bold leading-normal tracking-[0.015em] hover:bg-opacity-80 transition-opacity">
+<span class="material-symbols-outlined mr-2 text-lg">add_circle</span>
+<span class="truncate">Create New Category</span>
+</button>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- Categories Grid -->
+<div class="lg:col-span-2">
+<!-- SectionHeader -->
+<h2 class="text-gray-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] mb-4">Your Categories</h2>
+<!-- Modified ImageGrid -> CategoryCardGrid -->
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+<!-- Category Card 1 -->
+<div class="group relative flex flex-col justify-between gap-4 p-4 bg-white dark:bg-[#111818] rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 border border-gray-200 dark:border-gray-800">
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-teal-400 flex-shrink-0"></div>
+<p class="text-gray-900 dark:text-white text-base font-semibold leading-normal">Groceries</p>
+</div>
+<div>
+<p class="text-gray-600 dark:text-[#9db9b9] text-sm font-normal leading-normal">Total Spent:</p>
+<p class="text-gray-900 dark:text-white text-lg font-bold leading-tight">$1,250.75</p>
+<p class="text-gray-500 dark:text-[#9db9b9] text-xs font-normal leading-normal mt-1">42 Transactions</p>
+</div>
+<div class="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 rounded-full bg-gray-100 dark:bg-[#283939] text-gray-600 dark:text-white/70 hover:bg-gray-200 dark:hover:bg-[#3a4f4f]">
+<span class="material-symbols-outlined text-base">edit</span>
+</button>
+<button class="p-1.5 rounded-full bg-gray-100 dark:bg-[#283939] text-gray-600 dark:text-white/70 hover:bg-gray-200 dark:hover:bg-[#3a4f4f]">
+<span class="material-symbols-outlined text-base">delete</span>
+</button>
+</div>
+</div>
+<!-- Category Card 2 -->
+<div class="group relative flex flex-col justify-between gap-4 p-4 bg-white dark:bg-[#111818] rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 border border-gray-200 dark:border-gray-800">
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-blue-400 flex-shrink-0"></div>
+<p class="text-gray-900 dark:text-white text-base font-semibold leading-normal">Utilities</p>
+</div>
+<div>
+<p class="text-gray-600 dark:text-[#9db9b9] text-sm font-normal leading-normal">Total Spent:</p>
+<p class="text-gray-900 dark:text-white text-lg font-bold leading-tight">$450.20</p>
+<p class="text-gray-500 dark:text-[#9db9b9] text-xs font-normal leading-normal mt-1">12 Transactions</p>
+</div>
+<div class="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 rounded-full bg-gray-100 dark:bg-[#283939] text-gray-600 dark:text-white/70 hover:bg-gray-200 dark:hover:bg-[#3a4f4f]">
+<span class="material-symbols-outlined text-base">edit</span>
+</button>
+<button class="p-1.5 rounded-full bg-gray-100 dark:bg-[#283939] text-gray-600 dark:text-white/70 hover:bg-gray-200 dark:hover:bg-[#3a4f4f]">
+<span class="material-symbols-outlined text-base">delete</span>
+</button>
+</div>
+</div>
+<!-- Category Card 3 -->
+<div class="group relative flex flex-col justify-between gap-4 p-4 bg-white dark:bg-[#111818] rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 border border-gray-200 dark:border-gray-800">
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-orange-400 flex-shrink-0"></div>
+<p class="text-gray-900 dark:text-white text-base font-semibold leading-normal">Transport</p>
+</div>
+<div>
+<p class="text-gray-600 dark:text-[#9db9b9] text-sm font-normal leading-normal">Total Spent:</p>
+<p class="text-gray-900 dark:text-white text-lg font-bold leading-tight">$230.50</p>
+<p class="text-gray-500 dark:text-[#9db9b9] text-xs font-normal leading-normal mt-1">31 Transactions</p>
+</div>
+<div class="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 rounded-full bg-gray-100 dark:bg-[#283939] text-gray-600 dark:text-white/70 hover:bg-gray-200 dark:hover:bg-[#3a4f4f]">
+<span class="material-symbols-outlined text-base">edit</span>
+</button>
+<button class="p-1.5 rounded-full bg-gray-100 dark:bg-[#283939] text-gray-600 dark:text-white/70 hover:bg-gray-200 dark:hover:bg-[#3a4f4f]">
+<span class="material-symbols-outlined text-base">delete</span>
+</button>
+</div>
+</div>
+<!-- Category Card 4 -->
+<div class="group relative flex flex-col justify-between gap-4 p-4 bg-white dark:bg-[#111818] rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 border border-gray-200 dark:border-gray-800">
+<div class="flex items-center gap-3">
+<div class="w-3 h-3 rounded-full bg-purple-400 flex-shrink-0"></div>
+<p class="text-gray-900 dark:text-white text-base font-semibold leading-normal">Entertainment</p>
+</div>
+<div>
+<p class="text-gray-600 dark:text-[#9db9b9] text-sm font-normal leading-normal">Total Spent:</p>
+<p class="text-gray-900 dark:text-white text-lg font-bold leading-tight">$670.00</p>
+<p class="text-gray-500 dark:text-[#9db9b9] text-xs font-normal leading-normal mt-1">18 Transactions</p>
+</div>
+<div class="absolute top-4 right-4 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
+<button class="p-1.5 rounded-full bg-gray-100 dark:bg-[#283939] text-gray-600 dark:text-white/70 hover:bg-gray-200 dark:hover:bg-[#3a4f4f]">
+<span class="material-symbols-outlined text-base">edit</span>
+</button>
+<button class="p-1.5 rounded-full bg-gray-100 dark:bg-[#283939] text-gray-600 dark:text-white/70 hover:bg-gray-200 dark:hover:bg-[#3a4f4f]">
+<span class="material-symbols-outlined text-base">delete</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+<!-- Statistics Sidebar -->
+<div class="lg:col-span-1">
+<!-- SectionHeader -->
+<h2 class="text-gray-900 dark:text-white text-[22px] font-bold leading-tight tracking-[-0.015em] mb-4">Category Overview</h2>
+<div class="flex flex-col gap-6">
+<!-- Doughnut Chart Card -->
+<div class="p-6 bg-white dark:bg-[#111818] rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
+<h3 class="text-gray-900 dark:text-white font-semibold mb-4">Spending by Category</h3>
+<div class="flex justify-center items-center h-48">
+<img class="rounded-full" data-alt="A doughnut chart showing spending distribution across different categories." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDs1hm2ZFCw_7zMmxmPxojOrGZaz_-H0XtInWWmScwU4hvwR-7VYmQmy2IXAICmhA3keM49-DM31VVsdcBZoH6jmvJ-80UisEndKaReH5JxuHbrrEMjn1pA7CLdFLDfR11JZhWtZqe-LRszhfg5ExJKr81-8bvQAllpBIQB_5LQJ0Be3cUW00ZDvfQCj8UAgjjwxElUke2aci_djoqv6hz-Fl9WBOSzNBwesJFcSZuae_azYIDHifMxFKyKy0JPobfD6Zq2OVM3f6U"/>
+</div>
+</div>
+<!-- Summary Cards -->
+<div class="grid grid-cols-2 gap-4">
+<div class="p-4 bg-white dark:bg-[#111818] rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
+<p class="text-gray-500 dark:text-[#9db9b9] text-sm font-normal leading-normal mb-1">Total Categories</p>
+<p class="text-gray-900 dark:text-white text-2xl font-bold">12</p>
+</div>
+<div class="p-4 bg-white dark:bg-[#111818] rounded-xl shadow-sm border border-gray-200 dark:border-gray-800">
+<p class="text-gray-500 dark:text-[#9db9b9] text-sm font-normal leading-normal mb-1">Most Frequent</p>
+<p class="text-gray-900 dark:text-white text-base font-semibold truncate">Groceries</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</div>
+</body></html>

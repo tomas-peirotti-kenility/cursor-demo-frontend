@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Add Expense Modal</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    colors: {
+                        "primary": "#4A90E2",
+                        "primary-focus": "#357ABD",
+                        "secondary": "#333333",
+                        "secondary-dark": "#E0E0E0",
+                        "accent": "#DDDDDD",
+                        "accent-dark": "#3b5454",
+                        "error": "#D0021B",
+                        "success": "#7ED321",
+                        "background-light": "#F4F4F4",
+                        "background-dark": "#102222",
+                        "card-light": "#FFFFFF",
+                        "card-dark": "#1c2727",
+                        "placeholder-light": "#A0AEC0",
+                        "placeholder-dark": "#9db9b9",
+                    },
+                    fontFamily: {
+                        "display": ["Inter", "sans-serif"]
+                    },
+                    borderRadius: {
+                        "DEFAULT": "0.5rem",
+                        "lg": "0.75rem",
+                        "xl": "1rem",
+                        "full": "9999px",
+                    },
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings:
+                'FILL' 0,
+                'wght' 400,
+                'GRAD' 0,
+                'opsz' 24
+        }
+        /* Custom styles for select arrow to match theme */
+        .form-select {
+            --select-button-svg-light: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='24px' height='24px' fill='rgb(160,174,192)' viewBox='0 0 256 256'%3e%3cpath d='M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z'%3e%3c/path%3e%3c/svg%3e");
+            --select-button-svg-dark: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='24px' height='24px' fill='rgb(157,185,185)' viewBox='0 0 256 256'%3e%3cpath d='M181.66,170.34a8,8,0,0,1,0,11.32l-48,48a8,8,0,0,1-11.32,0l-48-48a8,8,0,0,1,11.32-11.32L128,212.69l42.34-42.35A8,8,0,0,1,181.66,170.34Zm-96-84.68L128,43.31l42.34,42.35a8,8,0,0,0,11.32-11.32l-48-48a8,8,0,0,0-11.32,0l-48,48A8,8,0,0,0,85.66,85.66Z'%3e%3c/path%3e%3c/svg%3e");
+            background-image: var(--select-button-svg-light);
+            background-position: right 0.75rem center;
+            background-repeat: no-repeat;
+            background-size: 1.5em;
+            padding-right: 2.5rem;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+        }
+        .dark .form-select {
+            background-image: var(--select-button-svg-dark);
+        }
+    </style>
+</head>
+<body class="font-display bg-background-light dark:bg-background-dark antialiased">
+<div class="relative flex min-h-screen w-full items-center justify-center p-4 bg-gray-900/50 dark:bg-black/50">
+<!-- Background content (dimmed) -->
+<div class="absolute inset-0 -z-10">
+<div class="p-8">
+<h1 class="text-4xl font-bold text-secondary dark:text-secondary-dark">Expense Dashboard</h1>
+<p class="text-gray-600 dark:text-gray-400">Your recent transactions will appear here.</p>
+</div>
+</div>
+<!-- Modal Container -->
+<div class="layout-content-container flex w-full max-w-lg flex-col rounded-lg bg-card-light dark:bg-card-dark shadow-2xl">
+<!-- Modal Header -->
+<div class="flex items-center justify-between gap-3 p-6 border-b border-accent dark:border-accent-dark">
+<div class="flex flex-col gap-1">
+<p class="text-xl font-bold leading-tight tracking-tight text-secondary dark:text-white">Add New Expense</p>
+<p class="text-sm text-gray-500 dark:text-placeholder-dark">Fill in the details below to add a new expense record.</p>
+</div>
+<button class="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full text-gray-600 hover:bg-gray-200 dark:text-gray-400 dark:hover:bg-gray-700">
+<span class="material-symbols-outlined text-xl">close</span>
+</button>
+</div>
+<!-- Form Body -->
+<div class="flex flex-col gap-6 p-6">
+<!-- Amount Field -->
+<div class="flex flex-col gap-2">
+<label class="text-sm font-medium text-secondary dark:text-white" for="amount">Amount</label>
+<div class="relative">
+<div class="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+<span class="text-gray-500 dark:text-placeholder-dark sm:text-sm">$</span>
+</div>
+<input class="form-input flex w-full resize-none overflow-hidden rounded-DEFAULT border border-accent bg-background-light py-3 pl-7 pr-3 text-secondary focus:border-primary focus:outline-0 focus:ring-2 focus:ring-primary/50 dark:border-accent-dark dark:bg-card-dark dark:text-white dark:placeholder:text-placeholder-dark dark:focus:border-primary" id="amount" name="amount" placeholder="0.00" required="" step="0.01" type="number"/>
+</div>
+<!-- Error Message -->
+<p class="text-xs text-error">Amount is required.</p>
+</div>
+<!-- Description Field -->
+<div class="flex flex-col gap-2">
+<label class="text-sm font-medium text-secondary dark:text-white" for="description">Description</label>
+<input class="form-input flex w-full resize-none overflow-hidden rounded-DEFAULT border border-accent bg-background-light p-3 text-secondary focus:border-primary focus:outline-0 focus:ring-2 focus:ring-primary/50 dark:border-accent-dark dark:bg-card-dark dark:text-white dark:placeholder:text-placeholder-dark dark:focus:border-primary" id="description" maxlength="200" minlength="3" name="description" placeholder="e.g., Lunch with client" required="" value="Team Lunch"/>
+</div>
+<!-- Category Field -->
+<div class="flex flex-col gap-2">
+<label class="text-sm font-medium text-secondary dark:text-white" for="category">Category</label>
+<select class="form-select flex w-full resize-none overflow-hidden rounded-DEFAULT border border-accent bg-background-light p-3 text-secondary focus:border-primary focus:outline-0 focus:ring-2 focus:ring-primary/50 dark:border-accent-dark dark:bg-card-dark dark:text-white dark:placeholder:text-placeholder-dark dark:focus:border-primary" id="category" name="category" required="">
+<option disabled="" value="">Select a category</option>
+<option selected="" value="food">Food</option>
+<option value="transport">Transport</option>
+<option value="utilities">Utilities</option>
+<option value="entertainment">Entertainment</option>
+<option value="other">Other</option>
+</select>
+</div>
+<!-- Date Field -->
+<div class="flex flex-col gap-2">
+<label class="text-sm font-medium text-secondary dark:text-white" for="date">Date</label>
+<div class="relative flex w-full items-stretch">
+<input class="form-input w-full flex-1 rounded-DEFAULT rounded-r-none border border-r-0 border-accent bg-background-light p-3 text-secondary focus:z-10 focus:border-primary focus:outline-0 focus:ring-2 focus:ring-primary/50 dark:border-accent-dark dark:bg-card-dark dark:text-white dark:placeholder:text-placeholder-dark dark:focus:border-primary" id="date" name="date" required="" type="date"/>
+<div class="flex items-center justify-center rounded-r-DEFAULT border border-l-0 border-accent bg-background-light px-3 text-gray-500 dark:border-accent-dark dark:bg-card-dark dark:text-placeholder-dark">
+<span class="material-symbols-outlined text-xl">calendar_today</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Modal Footer -->
+<div class="flex flex-wrap items-center justify-end gap-3 p-6 border-t border-accent dark:border-accent-dark">
+<button class="flex h-10 min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-DEFAULT px-4 text-sm font-medium text-secondary transition-colors hover:bg-gray-100 dark:text-white dark:hover:bg-white/10">
+<span class="truncate">Cancel</span>
+</button>
+<button class="flex h-10 min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-DEFAULT bg-primary px-4 text-sm font-medium text-white transition-colors hover:bg-primary-focus disabled:cursor-not-allowed disabled:opacity-50">
+<span class="truncate">Save Expense</span>
+</button>
+<!-- Disabled state example -->
+<!-- <button disabled class="flex h-10 min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-DEFAULT bg-primary px-4 text-sm font-medium text-white transition-colors hover:bg-primary-focus disabled:cursor-not-allowed disabled:opacity-50">
+                    <span class="truncate">Save Expense</span>
+                </button> -->
+</div>
+</div>
+</div>
+</body></html>

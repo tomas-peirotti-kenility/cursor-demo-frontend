@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Expense Tracker Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              "primary": "#13ecec",
+              "background-light": "#f6f8f8",
+              "background-dark": "#102222",
+            },
+            fontFamily: {
+              "display": ["Inter", "sans-serif"]
+            },
+            borderRadius: {"DEFAULT": "0.25rem", "lg": "0.5rem", "xl": "0.75rem", "full": "9999px"},
+          },
+        },
+      }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="bg-background-light dark:bg-background-dark font-display">
+<div class="flex h-screen">
+<!-- SideNavBar -->
+<aside class="flex-shrink-0 w-64 bg-[#1c2727] dark:bg-[#111818] p-4 flex flex-col justify-between">
+<div class="flex flex-col gap-4">
+<div class="flex items-center gap-3 p-2">
+<div class="bg-center bg-no-repeat aspect-square bg-cover rounded-full size-10" data-alt="User avatar" style='background-image: url("https://lh3.googleusercontent.com/aida-public/AB6AXuDThthQtewioeLrJq7gw3_zPS5z6GRAoXuDyzafylkXJar0o0u41AFwyTzzz_pjU2dC6qIPF5D7L-m_Md35YorOlXa6cLWtv4W-uM5EdUDLEUUlBTeQofDEFZdFSfzJcz2nOILtX9eDvBejosyGzYdfEjgOOago1tXFilxcY5Yj_k6b4N6PUz4d1_fqAXpbIo0Zj7uQ6KZ4ikJlYsqdOZs6VqoSRh9fghaU5A6yVcIwIEpAKZ3lFyOY7-9yhe-Xc1A_nqe_5MRuYls");'></div>
+<div class="flex flex-col">
+<h1 class="text-white text-base font-medium leading-normal">Alex Doe</h1>
+<p class="text-[#9db9b9] text-sm font-normal leading-normal">alex.doe@email.com</p>
+</div>
+</div>
+<nav class="flex flex-col gap-2 mt-4">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-white/70 hover:bg-white/10" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<p class="text-sm font-medium leading-normal">Dashboard</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg bg-primary/20 text-primary" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">receipt_long</span>
+<p class="text-sm font-medium leading-normal">Expenses</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-white/70 hover:bg-white/10" href="#">
+<span class="material-symbols-outlined">leaderboard</span>
+<p class="text-sm font-medium leading-normal">Reports</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-white/70 hover:bg-white/10" href="#">
+<span class="material-symbols-outlined">settings</span>
+<p class="text-sm font-medium leading-normal">Settings</p>
+</a>
+</nav>
+</div>
+<div class="flex flex-col gap-4">
+<button class="flex min-w-[84px] max-w-[480px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-[#111818] text-sm font-bold leading-normal tracking-[0.015em]">
+<span class="truncate">Upgrade Plan</span>
+</button>
+<div class="flex flex-col gap-1 border-t border-white/10 pt-4">
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-white/70 hover:bg-white/10" href="#">
+<span class="material-symbols-outlined">help</span>
+<p class="text-sm font-medium leading-normal">Help Center</p>
+</a>
+<a class="flex items-center gap-3 px-3 py-2 rounded-lg text-white/70 hover:bg-white/10" href="#">
+<span class="material-symbols-outlined">logout</span>
+<p class="text-sm font-medium leading-normal">Log Out</p>
+</a>
+</div>
+</div>
+</aside>
+<!-- Main Content -->
+<main class="flex-1 p-6 lg:p-8 overflow-y-auto">
+<div class="max-w-7xl mx-auto">
+<!-- PageHeading -->
+<div class="flex flex-wrap justify-between items-center gap-4 mb-6">
+<h1 class="text-slate-800 dark:text-white text-4xl font-black leading-tight tracking-[-0.033em]">Expenses</h1>
+<div class="flex items-center gap-3">
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-transparent border border-primary text-primary text-sm font-bold leading-normal tracking-[0.015em] hover:bg-primary/10">
+<span class="material-symbols-outlined mr-2 text-base">ios_share</span>
+<span class="truncate">Export to CSV</span>
+</button>
+<button class="flex min-w-[84px] cursor-pointer items-center justify-center overflow-hidden rounded-lg h-10 px-4 bg-primary text-[#111818] text-sm font-bold leading-normal tracking-[0.015em] hover:bg-opacity-90">
+<span class="material-symbols-outlined mr-2 text-base">add_circle</span>
+<span class="truncate">Add New Expense</span>
+</button>
+</div>
+</div>
+<!-- Main content card -->
+<div class="bg-white dark:bg-[#1c2727] rounded-xl shadow-sm p-6">
+<!-- Filter and Search Bar -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-6 pb-6 border-b border-slate-200 dark:border-white/10">
+<!-- Search Bar -->
+<div class="lg:col-span-2">
+<label class="flex flex-col w-full">
+<span class="text-sm font-medium text-slate-600 dark:text-slate-300 mb-1.5">Search Description</span>
+<div class="flex w-full flex-1 items-stretch rounded-lg h-10">
+<div class="text-[#9db9b9] flex border border-r-0 border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-[#283939] items-center justify-center pl-3 rounded-l-lg">
+<span class="material-symbols-outlined text-xl">search</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg text-slate-800 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-300 dark:border-slate-600 bg-white dark:bg-[#283939] h-full placeholder:text-slate-400 dark:placeholder:text-[#9db9b9] px-3 text-sm font-normal leading-normal" placeholder="Search expenses..."/>
+</div>
+</label>
+</div>
+<!-- Date Range Picker -->
+<div>
+<label class="flex flex-col w-full">
+<span class="text-sm font-medium text-slate-600 dark:text-slate-300 mb-1.5">Date Range</span>
+<div class="flex w-full flex-1 items-stretch rounded-lg h-10">
+<div class="text-slate-400 dark:text-[#9db9b9] flex border border-r-0 border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-[#283939] items-center justify-center pl-3 rounded-l-lg">
+<span class="material-symbols-outlined text-xl">calendar_month</span>
+</div>
+<input class="form-input flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg text-slate-800 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-300 dark:border-slate-600 bg-white dark:bg-[#283939] h-full placeholder:text-slate-400 dark:placeholder:text-[#9db9b9] px-3 text-sm font-normal leading-normal" placeholder="Select dates"/>
+</div>
+</label>
+</div>
+<!-- Category Filter -->
+<div>
+<label class="flex flex-col w-full">
+<span class="text-sm font-medium text-slate-600 dark:text-slate-300 mb-1.5">Category</span>
+<div class="flex w-full flex-1 items-stretch rounded-lg h-10">
+<div class="text-slate-400 dark:text-[#9db9b9] flex border border-r-0 border-slate-300 dark:border-slate-600 bg-slate-50 dark:bg-[#283939] items-center justify-center pl-3 rounded-l-lg">
+<span class="material-symbols-outlined text-xl">category</span>
+</div>
+<select class="form-select flex w-full min-w-0 flex-1 resize-none overflow-hidden rounded-r-lg text-slate-800 dark:text-white focus:outline-0 focus:ring-2 focus:ring-primary/50 border border-slate-300 dark:border-slate-600 bg-white dark:bg-[#283939] h-full px-3 text-sm font-normal leading-normal">
+<option>All Categories</option>
+<option>Groceries</option>
+<option>Utilities</option>
+<option>Travel</option>
+</select>
+</div>
+</label>
+</div>
+</div>
+<!-- Total Expenses -->
+<div class="mb-4">
+<p class="text-sm text-slate-500 dark:text-slate-400">Total Filtered Expenses: <span class="font-bold text-lg text-slate-700 dark:text-slate-200">$1,234.56</span></p>
+</div>
+<!-- Expenses Table -->
+<div class="overflow-x-auto">
+<table class="w-full text-sm text-left text-slate-500 dark:text-slate-400">
+<thead class="text-xs text-slate-700 dark:text-slate-300 uppercase bg-slate-50 dark:bg-slate-800/50">
+<tr>
+<th class="px-6 py-3 rounded-l-lg" scope="col">
+<div class="flex items-center gap-1 cursor-pointer">Date <span class="material-symbols-outlined text-sm">unfold_more</span></div>
+</th>
+<th class="px-6 py-3" scope="col">
+<div class="flex items-center gap-1 cursor-pointer">Description <span class="material-symbols-outlined text-sm">unfold_more</span></div>
+</th>
+<th class="px-6 py-3" scope="col">
+<div class="flex items-center gap-1 cursor-pointer">Category <span class="material-symbols-outlined text-sm">unfold_more</span></div>
+</th>
+<th class="px-6 py-3" scope="col">
+<div class="flex items-center gap-1 cursor-pointer">Amount <span class="material-symbols-outlined text-sm">unfold_more</span></div>
+</th>
+<th class="px-6 py-3 rounded-r-lg text-center" scope="col">Actions</th>
+</tr>
+</thead>
+<tbody>
+<tr class="bg-white dark:bg-[#1c2727] border-b dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30">
+<td class="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap">Jul 25, 2024</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-300">Monthly grocery shopping</td>
+<td class="px-6 py-4">
+<span class="bg-teal-100 text-teal-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-teal-900 dark:text-teal-300">Groceries</span>
+</td>
+<td class="px-6 py-4 font-mono text-slate-900 dark:text-white">$245.75</td>
+<td class="px-6 py-4 text-center">
+<button class="text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary p-1"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="text-slate-500 hover:text-red-500 dark:text-slate-400 dark:hover:text-red-500 p-1"><span class="material-symbols-outlined text-lg">delete</span></button>
+</td>
+</tr>
+<tr class="bg-white dark:bg-[#1c2727] border-b dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30">
+<td class="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap">Jul 24, 2024</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-300">Electricity Bill</td>
+<td class="px-6 py-4">
+<span class="bg-purple-100 text-purple-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-purple-900 dark:text-purple-300">Utilities</span>
+</td>
+<td class="px-6 py-4 font-mono text-slate-900 dark:text-white">$88.20</td>
+<td class="px-6 py-4 text-center">
+<button class="text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary p-1"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="text-slate-500 hover:text-red-500 dark:text-slate-400 dark:hover:text-red-500 p-1"><span class="material-symbols-outlined text-lg">delete</span></button>
+</td>
+</tr>
+<tr class="bg-white dark:bg-[#1c2727] border-b dark:border-slate-700 hover:bg-slate-50 dark:hover:bg-slate-800/30">
+<td class="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap">Jul 22, 2024</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-300">Flight to New York</td>
+<td class="px-6 py-4">
+<span class="bg-orange-100 text-orange-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-orange-900 dark:text-orange-300">Travel</span>
+</td>
+<td class="px-6 py-4 font-mono text-slate-900 dark:text-white">$450.00</td>
+<td class="px-6 py-4 text-center">
+<button class="text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary p-1"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="text-slate-500 hover:text-red-500 dark:text-slate-400 dark:hover:text-red-500 p-1"><span class="material-symbols-outlined text-lg">delete</span></button>
+</td>
+</tr>
+<tr class="bg-white dark:bg-[#1c2727] hover:bg-slate-50 dark:hover:bg-slate-800/30">
+<td class="px-6 py-4 font-medium text-slate-900 dark:text-white whitespace-nowrap">Jul 20, 2024</td>
+<td class="px-6 py-4 text-slate-600 dark:text-slate-300">Dinner with friends</td>
+<td class="px-6 py-4">
+<span class="bg-yellow-100 text-yellow-800 text-xs font-medium mr-2 px-2.5 py-0.5 rounded-full dark:bg-yellow-900 dark:text-yellow-300">Entertainment</span>
+</td>
+<td class="px-6 py-4 font-mono text-slate-900 dark:text-white">$120.50</td>
+<td class="px-6 py-4 text-center">
+<button class="text-slate-500 hover:text-primary dark:text-slate-400 dark:hover:text-primary p-1"><span class="material-symbols-outlined text-lg">edit</span></button>
+<button class="text-slate-500 hover:text-red-500 dark:text-slate-400 dark:hover:text-red-500 p-1"><span class="material-symbols-outlined text-lg">delete</span></button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+<!-- Pagination -->
+<nav aria-label="Table navigation" class="flex items-center justify-between pt-4 mt-4 border-t border-slate-200 dark:border-white/10">
+<span class="text-sm font-normal text-slate-500 dark:text-slate-400">Showing <span class="font-semibold text-slate-900 dark:text-white">1-10</span> of <span class="font-semibold text-slate-900 dark:text-white">100</span></span>
+<ul class="inline-flex items-center -space-x-px">
+<li>
+<a class="flex items-center justify-center h-8 px-3 ml-0 leading-tight text-slate-500 bg-white border border-slate-300 rounded-l-lg hover:bg-slate-100 hover:text-slate-700 dark:bg-[#283939] dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-white" href="#">Previous</a>
+</li>
+<li>
+<a class="flex items-center justify-center h-8 px-3 leading-tight text-slate-500 bg-white border border-slate-300 hover:bg-slate-100 hover:text-slate-700 dark:bg-[#283939] dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-white" href="#">1</a>
+</li>
+<li>
+<a aria-current="page" class="flex items-center justify-center h-8 px-3 text-black bg-primary/30 border border-primary/50 dark:border-primary/50 dark:text-white" href="#">2</a>
+</li>
+<li>
+<a class="flex items-center justify-center h-8 px-3 leading-tight text-slate-500 bg-white border border-slate-300 hover:bg-slate-100 hover:text-slate-700 dark:bg-[#283939] dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-white" href="#">3</a>
+</li>
+<li>
+<a class="flex items-center justify-center h-8 px-3 leading-tight text-slate-500 bg-white border border-slate-300 rounded-r-lg hover:bg-slate-100 hover:text-slate-700 dark:bg-[#283939] dark:border-slate-700 dark:text-slate-400 dark:hover:bg-slate-700 dark:hover:text-white" href="#">Next</a>
+</li>
+</ul>
+</nav>
+</div>
+</div>
+</main>
+</div>
+</body></html>
