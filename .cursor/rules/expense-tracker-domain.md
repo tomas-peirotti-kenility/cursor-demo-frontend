@@ -1,0 +1,459 @@
+# Expense Tracker Domain Rules
+
+## Domain Overview
+
+This is a personal expense tracking application with browser-based persistence. All data is stored in LocalStorage, mimicking a backend API without requiring a server.
+
+## Data Models
+
+### Expense Entity
+
+```typescript
+interface Expense {
+  id: string;              // UUID generated with crypto.randomUUID()
+  amount: number;          // Positive number, max 2 decimal places
+  description: string;     // 3-200 characters
+  category: string;        // Must match existing category name
+  date: Date;             // Cannot be future date
+  createdAt: Date;        // Auto-generated on creation
+  updatedAt: Date;        // Auto-updated on modification
+}
+```
+
+**Business Rules:**
+- Amount must be positive and have at most 2 decimal places
+- Description is required and must be 3-200 characters
+- Category must exist in the categories list
+- Date cannot be in the future
+- ID is auto-generated using `crypto.randomUUID()`
+- createdAt is set once on creation and never modified
+- updatedAt is updated every time the expense is modified
+
+### Category Entity
+
+```typescript
+interface Category {
+  id: string;              // UUID generated with crypto.randomUUID()
+  name: string;            // Unique, 2-50 characters
+  color: string;           // Hex color code (e.g., #10b981)
+  icon: string;            // Icon identifier (e.g., 'utensils', 'car')
+  createdAt: Date;        // Auto-generated on creation
+}
+```
+
+**Business Rules:**
+- Category name must be unique across all categories
+- Name must be 2-50 characters
+- Color must be a valid hex color code
+- Icon is optional but recommended for better UX
+- Default categories are seeded on first application load
+- Cannot delete a category if expenses exist with that category
+
+## Default Categories
+
+Seed these categories on first application load:
+
+```typescript
+const DEFAULT_CATEGORIES = [
+  { name: 'Food', color: '#10b981', icon: 'utensils' },
+  { name: 'Transportation', color: '#3b82f6', icon: 'car' },
+  { name: 'Entertainment', color: '#8b5cf6', icon: 'film' },
+  { name: 'Utilities', color: '#f59e0b', icon: 'bolt' },
+  { name: 'Healthcare', color: '#ef4444', icon: 'heart' },
+  { name: 'Other', color: '#6b7280', icon: 'ellipsis' },
+];
+```
+
+## LocalStorage Persistence
+
+### Storage Keys
+
+- `expenses` - Array of expense objects
+- `categories` - Array of category objects
+
+### Storage Service Requirements
+
+The storage service (`services/storage.ts`) must provide:
+
+#### Expense Operations
+- `getExpenses(filters?)` - Retrieve all expenses with optional filtering
+- `getExpenseById(id)` - Retrieve single expense by ID
+- `createExpense(expense)` - Create new expense
+- `updateExpense(id, updates)` - Update existing expense
+- `deleteExpense(id)` - Delete expense by ID
+
+#### Category Operations
+- `getCategories()` - Retrieve all categories
+- `getCategoryById(id)` - Retrieve single category by ID
+- `createCategory(category)` - Create new category (validate uniqueness)
+- `updateCategory(id, updates)` - Update existing category
+- `deleteCategory(id)` - Delete category (check for dependent expenses)
+
+#### Query Operations
+- `getExpensesByDateRange(startDate, endDate)` - Filter by date range
+- `getExpensesByCategory(categoryName)` - Filter by category
+- `getMonthlySummary(month, year)` - Calculate monthly totals
+- `getCategorySummary(month, year)` - Calculate category breakdown
+- `getTotalExpenses()` - Calculate total of all expenses
+
+#### Utility Operations
+- `initializeStorage()` - Seed default categories on first load
+- `exportToCSV()` - Generate CSV export of all expenses
+- `clearAllData()` - Clear all stored data (for testing/reset)
+
+### Data Serialization
+
+LocalStorage only stores strings, so proper serialization is required:
+
+```typescript
+// Saving data
+const saveExpenses = (expenses: Expense[]) => {
+  const serialized = JSON.stringify(expenses);
+  localStorage.setItem('expenses', serialized);
+};
+
+// Loading data (handle Date deserialization)
+const loadExpenses = (): Expense[] => {
+  const data = localStorage.getItem('expenses');
+  if (!data) return [];
+  
+  const parsed = JSON.parse(data);
+  return parsed.map((expense: any) => ({
+    ...expense,
+    date: new Date(expense.date),
+    createdAt: new Date(expense.createdAt),
+    updatedAt: new Date(expense.updatedAt),
+  }));
+};
+```
+
+## Validation Rules
+
+### Expense Validation
+
+```typescript
+const expenseSchema = z.object({
+  amount: z.number()
+    .positive('Amount must be positive')
+    .refine((val) => /^\d+(\.\d{1,2})?$/.test(val.toString()), 
+      'Amount must have at most 2 decimal places'),
+  description: z.string()
+    .min(3, 'Description must be at least 3 characters')
+    .max(200, 'Description must be at most 200 characters'),
+  category: z.string()
+    .min(1, 'Category is required'),
+  date: z.date()
+    .max(new Date(), 'Date cannot be in the future'),
+});
+```
+
+### Category Validation
+
+```typescript
+const categorySchema = z.object({
+  name: z.string()
+    .min(2, 'Name must be at least 2 characters')
+    .max(50, 'Name must be at most 50 characters')
+    .refine(async (name) => {
+      const categories = getCategories();
+      return !categories.some(cat => cat.name === name);
+    }, 'Category name must be unique'),
+  color: z.string()
+    .regex(/^#[0-9A-F]{6}$/i, 'Must be a valid hex color'),
+  icon: z.string().optional(),
+});
+```
+
+## Business Logic
+
+### Monthly Summary Calculation
+
+```typescript
+function calculateMonthlySummary(month: number, year: number) {
+  const expenses = getExpensesByDateRange(
+    new Date(year, month, 1),
+    new Date(year, month + 1, 0)
+  );
+  
+  return {
+    total: expenses.reduce((sum, exp) => sum + exp.amount, 0),
+    count: expenses.length,
+    byCategory: groupByCategory(expenses),
+    average: expenses.length > 0 
+      ? expenses.reduce((sum, exp) => sum + exp.amount, 0) / expenses.length 
+      : 0,
+  };
+}
+```
+
+### Category Summary Calculation
+
+```typescript
+function calculateCategorySummary(month: number, year: number) {
+  const expenses = getExpensesByDateRange(
+    new Date(year, month, 1),
+    new Date(year, month + 1, 0)
+  );
+  
+  const byCategory = expenses.reduce((acc, expense) => {
+    if (!acc[expense.category]) {
+      acc[expense.category] = { total: 0, count: 0 };
+    }
+    acc[expense.category].total += expense.amount;
+    acc[expense.category].count += 1;
+    return acc;
+  }, {} as Record<string, { total: number; count: number }>);
+  
+  return byCategory;
+}
+```
+
+### Filtering Logic
+
+Support multiple filter combinations:
+
+```typescript
+interface ExpenseFilters {
+  dateFrom?: Date;
+  dateTo?: Date;
+  category?: string;
+  minAmount?: number;
+  maxAmount?: number;
+  searchTerm?: string;
+}
+
+function filterExpenses(expenses: Expense[], filters: ExpenseFilters) {
+  return expenses.filter(expense => {
+    if (filters.dateFrom && expense.date < filters.dateFrom) return false;
+    if (filters.dateTo && expense.date > filters.dateTo) return false;
+    if (filters.category && expense.category !== filters.category) return false;
+    if (filters.minAmount && expense.amount < filters.minAmount) return false;
+    if (filters.maxAmount && expense.amount > filters.maxAmount) return false;
+    if (filters.searchTerm && 
+        !expense.description.toLowerCase().includes(filters.searchTerm.toLowerCase())) {
+      return false;
+    }
+    return true;
+  });
+}
+```
+
+### Sorting Logic
+
+```typescript
+type SortField = 'date' | 'amount' | 'category' | 'description';
+type SortOrder = 'asc' | 'desc';
+
+function sortExpenses(
+  expenses: Expense[], 
+  field: SortField, 
+  order: SortOrder = 'desc'
+) {
+  return [...expenses].sort((a, b) => {
+    let comparison = 0;
+    
+    switch (field) {
+      case 'date':
+        comparison = a.date.getTime() - b.date.getTime();
+        break;
+      case 'amount':
+        comparison = a.amount - b.amount;
+        break;
+      case 'category':
+        comparison = a.category.localeCompare(b.category);
+        break;
+      case 'description':
+        comparison = a.description.localeCompare(b.description);
+        break;
+    }
+    
+    return order === 'asc' ? comparison : -comparison;
+  });
+}
+```
+
+### Pagination Logic
+
+```typescript
+interface PaginationParams {
+  page: number;      // 1-indexed
+  limit: number;     // Items per page
+}
+
+function paginateExpenses(expenses: Expense[], params: PaginationParams) {
+  const { page, limit } = params;
+  const startIndex = (page - 1) * limit;
+  const endIndex = startIndex + limit;
+  
+  return {
+    data: expenses.slice(startIndex, endIndex),
+    pagination: {
+      currentPage: page,
+      totalPages: Math.ceil(expenses.length / limit),
+      totalItems: expenses.length,
+      itemsPerPage: limit,
+      hasNextPage: endIndex < expenses.length,
+      hasPreviousPage: page > 1,
+    },
+  };
+}
+```
+
+## CSV Export Specification
+
+### Format Requirements
+
+- **Encoding**: UTF-8 with BOM for Excel compatibility
+- **Delimiter**: Comma (,)
+- **Line Ending**: CRLF (\r\n)
+- **Header Row**: Yes, with column names
+- **Filename**: `expenses-export-YYYY-MM-DD.csv`
+
+### Column Specification
+
+```typescript
+const CSV_COLUMNS = [
+  'Date',
+  'Description', 
+  'Category',
+  'Amount',
+  'Created At'
+];
+```
+
+### Data Formatting
+
+```typescript
+function formatExpenseForCSV(expense: Expense): string[] {
+  return [
+    format(expense.date, 'yyyy-MM-dd'),
+    `"${expense.description.replace(/"/g, '""')}"`, // Escape quotes
+    expense.category,
+    `$${expense.amount.toFixed(2)}`,
+    format(expense.createdAt, 'yyyy-MM-dd HH:mm:ss'),
+  ];
+}
+
+function generateCSV(expenses: Expense[]): string {
+  const BOM = '\uFEFF'; // UTF-8 BOM for Excel
+  const header = CSV_COLUMNS.join(',');
+  const rows = expenses.map(exp => formatExpenseForCSV(exp).join(','));
+  return BOM + [header, ...rows].join('\r\n');
+}
+```
+
+### Download Implementation
+
+```typescript
+function downloadCSV(expenses: Expense[]) {
+  const csv = generateCSV(expenses);
+  const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+  const link = document.createElement('a');
+  const url = URL.createObjectURL(blob);
+  const filename = `expenses-export-${format(new Date(), 'yyyy-MM-dd')}.csv`;
+  
+  link.setAttribute('href', url);
+  link.setAttribute('download', filename);
+  link.style.visibility = 'hidden';
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+}
+```
+
+## Error Handling
+
+### Storage Errors
+
+```typescript
+// Handle quota exceeded
+try {
+  localStorage.setItem('expenses', data);
+} catch (error) {
+  if (error instanceof DOMException && error.name === 'QuotaExceededError') {
+    throw new Error('Storage quota exceeded. Please delete old expenses.');
+  }
+  throw error;
+}
+```
+
+### Validation Errors
+
+```typescript
+// Provide user-friendly error messages
+try {
+  expenseSchema.parse(formData);
+} catch (error) {
+  if (error instanceof z.ZodError) {
+    return error.errors.map(err => ({
+      field: err.path.join('.'),
+      message: err.message,
+    }));
+  }
+}
+```
+
+### Category Deletion Protection
+
+```typescript
+function deleteCategory(id: string) {
+  const category = getCategoryById(id);
+  const expenses = getExpenses();
+  const hasExpenses = expenses.some(exp => exp.category === category.name);
+  
+  if (hasExpenses) {
+    throw new Error(
+      `Cannot delete category "${category.name}" because it has associated expenses. ` +
+      `Please reassign or delete those expenses first.`
+    );
+  }
+  
+  // Proceed with deletion
+}
+```
+
+## UI/UX Requirements
+
+### Design Prototypes
+
+**IMPORTANT**: Use the HTML prototypes in `notes/prototypes/` as exact design references:
+
+- `dashboard_overview/` - Dashboard layout with summary cards and charts
+- `expenses_management/` - Expenses table with filters and pagination
+- `add/edit_expense_modal/` - Expense form modal
+- `categories_management/` - Category card grid
+- `category_form_modal/` - Category form with color/icon picker
+
+Review both `code.html` and `screen.png` in each prototype folder before implementing.
+
+### Responsive Breakpoints
+
+- **Mobile**: < 640px (sm)
+- **Tablet**: 640px - 1024px (md, lg)
+- **Desktop**: > 1024px (xl, 2xl)
+
+### Color Scheme
+
+Use category colors consistently across:
+- Category cards
+- Pie chart segments
+- Table row indicators
+- Filter badges
+
+### Loading States
+
+Show loading indicators for:
+- Initial data load
+- Form submissions
+- CSV export generation
+- Category deletion checks
+
+### Success/Error Feedback
+
+Use toast notifications for:
+- Expense created/updated/deleted
+- Category created/updated/deleted
+- CSV export completed
+- Validation errors
+- Storage errors
+

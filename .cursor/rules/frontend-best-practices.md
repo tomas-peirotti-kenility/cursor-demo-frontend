@@ -1,0 +1,148 @@
+# Frontend Development Best Practices
+
+## Code Quality & Standards
+
+### TypeScript
+- Use strict TypeScript configuration with no implicit any
+- Define explicit types for all props, state, and function parameters
+- Create dedicated type files in `src/types/` for domain models
+- Use type inference where it improves readability
+- Prefer interfaces for object shapes, types for unions/intersections
+
+### Component Design
+- Keep components focused and single-responsibility
+- Extract reusable logic into custom hooks
+- Use composition over prop drilling (Context API for shared state)
+- Implement proper error boundaries for graceful error handling
+- Prefer functional components with hooks over class components
+
+### File Organization
+- Group related files by feature/domain, not by type
+- Keep component files under 300 lines; split larger components
+- Co-locate tests, styles, and types with their components
+- Use index files sparingly; explicit imports are preferred
+- Name files consistently: PascalCase for components, kebab-case for utilities
+
+### Performance Optimization
+- Memoize expensive computations with `useMemo`
+- Prevent unnecessary re-renders with `useCallback` and `React.memo`
+- Lazy load routes and heavy components with `React.lazy`
+- Optimize images and assets (use appropriate formats and sizes)
+- Implement virtual scrolling for large lists (1000+ items)
+
+### State Management
+- Use local state (useState) for component-specific data
+- Use Context API for shared state across component trees
+- Consider Zustand/Redux for complex global state
+- Keep state as close to where it's used as possible
+- Avoid storing derived data in state; compute on render
+
+### Forms & Validation
+- Use React Hook Form for complex forms (better performance)
+- Implement Zod schemas for type-safe validation
+- Provide real-time validation feedback
+- Show clear, actionable error messages
+- Disable submit buttons during submission
+- Handle both client-side and server-side validation errors
+
+### Accessibility (a11y)
+- Use semantic HTML elements (button, nav, main, article)
+- Provide proper ARIA labels for interactive elements
+- Ensure keyboard navigation works for all interactions
+- Maintain sufficient color contrast (WCAG AA minimum)
+- Test with screen readers and keyboard-only navigation
+- Add focus indicators for interactive elements
+
+### Error Handling
+- Implement error boundaries at route/feature level
+- Show user-friendly error messages (avoid technical jargon)
+- Log errors to console in development, to service in production
+- Provide retry mechanisms for failed operations
+- Handle network errors gracefully with offline indicators
+
+### Code Style
+- Use ESLint and Prettier for consistent formatting
+- Follow consistent naming conventions:
+  - Components: PascalCase (UserProfile.tsx)
+  - Hooks: camelCase with 'use' prefix (useExpenses.ts)
+  - Utilities: camelCase (formatCurrency.ts)
+  - Constants: UPPER_SNAKE_CASE (DEFAULT_PAGE_SIZE)
+- Avoid magic numbers; use named constants
+- Write self-documenting code; comments explain "why", not "what"
+- Keep functions small and focused (< 50 lines ideal)
+
+### Testing Strategy
+- Write tests for critical business logic
+- Test user interactions, not implementation details
+- Use React Testing Library for component tests
+- Mock external dependencies (APIs, localStorage)
+- Aim for meaningful coverage, not 100% coverage
+- Test accessibility with jest-axe or similar tools
+
+## UI/UX Best Practices
+
+### Design System
+- Use a consistent component library (Shadcn UI, Material-UI, etc.)
+- Define design tokens (colors, spacing, typography) in Tailwind config
+- Create reusable UI components in `components/ui/`
+- Maintain visual consistency across all pages
+- Document component usage and variants
+
+### Responsive Design
+- Mobile-first approach (design for small screens first)
+- Use Tailwind responsive prefixes (sm:, md:, lg:, xl:)
+- Test on multiple device sizes (320px to 1920px+)
+- Implement collapsible navigation for mobile
+- Ensure touch targets are at least 44x44px
+
+### User Feedback
+- Show loading states for async operations (spinners, skeletons)
+- Display success/error toasts for user actions
+- Implement optimistic updates where appropriate
+- Provide clear feedback for form submissions
+- Use progress indicators for multi-step processes
+
+### Data Visualization
+- Choose appropriate chart types for data (bar, line, pie)
+- Use consistent colors across visualizations
+- Provide interactive tooltips with detailed information
+- Make charts responsive and touch-friendly
+- Include legends and axis labels for clarity
+
+### Navigation
+- Implement clear, intuitive navigation structure
+- Highlight active route in navigation
+- Use breadcrumbs for deep navigation hierarchies
+- Provide search functionality for large datasets
+- Implement proper routing with React Router
+
+## Development Workflow
+
+### Version Control
+- Write clear, descriptive commit messages
+- Use feature branches for new development
+- Keep commits small and focused
+- Review your own code before creating PRs
+- Use conventional commits (feat:, fix:, docs:, etc.)
+
+### Documentation
+- Document complex algorithms and business logic
+- Maintain up-to-date README with setup instructions
+- Document environment variables and configuration
+- Create inline JSDoc comments for public APIs
+- Keep documentation close to code it describes
+
+### Dependencies
+- Regularly update dependencies for security patches
+- Audit dependencies for vulnerabilities (npm audit)
+- Minimize bundle size; avoid unnecessary dependencies
+- Use tree-shaking friendly imports (import { x } from 'lib')
+- Lock dependency versions in package.json
+
+### Build & Deploy
+- Optimize production builds (minification, tree-shaking)
+- Use environment variables for configuration
+- Implement proper error tracking (Sentry, etc.)
+- Set up CI/CD pipelines for automated testing/deployment
+- Monitor bundle size and performance metrics
+
