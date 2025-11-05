@@ -1,3 +1,8 @@
+---
+description: When there're architectural definitions needed.
+alwaysApply: false
+---
+
 # Frontend Architecture Guidelines
 
 ## Project Structure
@@ -89,6 +94,7 @@ src/
 - **Benefits**: Better testability, reusability, separation of concerns
 
 Example:
+
 ```typescript
 // Container Component
 function ExpenseListContainer() {
@@ -112,18 +118,18 @@ Extract component logic into reusable hooks:
 export function useExpenses() {
   const [expenses, setExpenses] = useState<Expense[]>([]);
   const [loading, setLoading] = useState(true);
-  
+
   useEffect(() => {
     const data = storageService.getExpenses();
     setExpenses(data);
     setLoading(false);
   }, []);
-  
+
   const addExpense = (expense: Expense) => {
     storageService.createExpense(expense);
     setExpenses([...expenses, expense]);
   };
-  
+
   return { expenses, loading, addExpense };
 }
 ```
@@ -136,15 +142,15 @@ Create service modules for data operations:
 // services/storage.ts
 export const storageService = {
   getExpenses: (): Expense[] => {
-    const data = localStorage.getItem('expenses');
+    const data = localStorage.getItem("expenses");
     return data ? JSON.parse(data) : [];
   },
-  
+
   createExpense: (expense: Expense): void => {
     const expenses = storageService.getExpenses();
-    localStorage.setItem('expenses', JSON.stringify([...expenses, expense]));
+    localStorage.setItem("expenses", JSON.stringify([...expenses, expense]));
   },
-  
+
   // ... other CRUD operations
 };
 ```
@@ -153,7 +159,7 @@ export const storageService = {
 
 ```typescript
 // App.tsx
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 function App() {
   return (
@@ -215,13 +221,14 @@ export function ExpenseProvider({ children }) {
 }
 
 // For complex state: Zustand
-import create from 'zustand';
+import create from "zustand";
 
 const useExpenseStore = create<ExpenseStore>((set) => ({
   expenses: [],
-  addExpense: (expense) => set((state) => ({ 
-    expenses: [...state.expenses, expense] 
-  })),
+  addExpense: (expense) =>
+    set((state) => ({
+      expenses: [...state.expenses, expense],
+    })),
 }));
 ```
 
@@ -231,8 +238,8 @@ const useExpenseStore = create<ExpenseStore>((set) => ({
 
 ```typescript
 // Lazy load routes
-const Dashboard = lazy(() => import('./pages/Dashboard'));
-const Expenses = lazy(() => import('./pages/Expenses'));
+const Dashboard = lazy(() => import("./pages/Dashboard"));
+const Expenses = lazy(() => import("./pages/Expenses"));
 
 // Wrap in Suspense
 <Suspense fallback={<LoadingSpinner />}>
@@ -240,22 +247,25 @@ const Expenses = lazy(() => import('./pages/Expenses'));
     <Route path="/" element={<Dashboard />} />
     <Route path="/expenses" element={<Expenses />} />
   </Routes>
-</Suspense>
+</Suspense>;
 ```
 
 ### Memoization Strategy
 
 ```typescript
 // Memoize expensive computations
-const monthlySummary = useMemo(() => 
-  calculateMonthlySummary(expenses), 
+const monthlySummary = useMemo(
+  () => calculateMonthlySummary(expenses),
   [expenses]
 );
 
 // Memoize callbacks passed to children
-const handleDelete = useCallback((id: string) => {
-  deleteExpense(id);
-}, [deleteExpense]);
+const handleDelete = useCallback(
+  (id: string) => {
+    deleteExpense(id);
+  },
+  [deleteExpense]
+);
 
 // Memoize components that receive stable props
 const ExpenseRow = memo(({ expense }: Props) => {
@@ -301,7 +311,7 @@ export interface Expense {
   updatedAt: Date;
 }
 
-export type ExpenseInput = Omit<Expense, 'id' | 'createdAt' | 'updatedAt'>;
+export type ExpenseInput = Omit<Expense, "id" | "createdAt" | "updatedAt">;
 export type ExpenseUpdate = Partial<ExpenseInput> & { id: string };
 ```
 
@@ -314,11 +324,11 @@ class ErrorBoundary extends Component<Props, State> {
   static getDerivedStateFromError(error: Error) {
     return { hasError: true, error };
   }
-  
+
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error('Error caught by boundary:', error, errorInfo);
+    console.error("Error caught by boundary:", error, errorInfo);
   }
-  
+
   render() {
     if (this.state.hasError) {
       return <ErrorFallback error={this.state.error} />;
@@ -337,7 +347,7 @@ async function loadExpenses() {
     const data = await storageService.getExpenses();
     setExpenses(data);
   } catch (error) {
-    setError('Failed to load expenses');
+    setError("Failed to load expenses");
     console.error(error);
   } finally {
     setLoading(false);
@@ -388,12 +398,11 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          'react-vendor': ['react', 'react-dom', 'react-router-dom'],
-          'ui-vendor': ['recharts', 'date-fns'],
+          "react-vendor": ["react", "react-dom", "react-router-dom"],
+          "ui-vendor": ["recharts", "date-fns"],
         },
       },
     },
   },
 });
 ```
-
